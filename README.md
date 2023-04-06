@@ -1,2 +1,0 @@
-# travery
-Your travel diary
