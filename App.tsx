@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useFonts } from 'expo-font'
 
 export default function App() {
   const [varA, setVarA] = useState('');
@@ -12,6 +13,16 @@ export default function App() {
 
   const handleChangeNameInput = (text: string) => {
     setName(text)
+  }
+
+  const [fontsLoaded] = useFonts({
+    sspro: require('./src/assets/fonts/SourceSansPro-Regular.ttf'),
+    ssprosemibold:require('./src/assets/fonts/SourceSansPro-SemiBold.ttf'),
+    ssprobold:require('./src/assets/fonts/SourceSansPro-Bold.ttf'),
+  })
+
+  if (!fontsLoaded) {
+    return null;
   }
 
   return (
