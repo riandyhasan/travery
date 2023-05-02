@@ -17,6 +17,7 @@ export default function App() {
 
   const [fontsLoaded] = useFonts({
     sspro: require('./src/assets/fonts/SourceSansPro-Regular.ttf'),
+    ssprolight: require('./src/assets/fonts/SourceSansPro-Regular.ttf'),
     ssprosemibold:require('./src/assets/fonts/SourceSansPro-SemiBold.ttf'),
     ssprobold:require('./src/assets/fonts/SourceSansPro-Bold.ttf'),
   })
