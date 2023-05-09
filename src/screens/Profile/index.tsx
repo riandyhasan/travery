@@ -5,6 +5,7 @@ import { SCREEN_WIDTH } from "@src/utils/deviceDimensions";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { useState } from "react";
+import { navigate } from "@src/navigations";
 
 const Profile = () => {
     const [currTab, setCurrTab] = useState('airplane')
@@ -79,7 +80,7 @@ const Profile = () => {
                             <ImageView name="profile" style={{height: '100%', width: '100%'}} resizeMode="contain"/>
                         </View>
                         <View style={{position: 'absolute', top: 50, right: 20}}>
-                            <TouchableOpacity onPress={() => {console.log('line 25')}} activeOpacity={0.75}>
+                            <TouchableOpacity onPress={() => {navigate('EditProfile')}} activeOpacity={0.75}>
                                 <View style={{backgroundColor: 'white', padding: 6, borderRadius: iconSize}}>
                                     <Ionicons name='pencil' size={iconSize}/>
                                 </View>
