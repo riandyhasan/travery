@@ -1,4 +1,5 @@
 const defaultState = {
+  username: null,
   plan_id: null,
   journal_id: null,
   story_id: null,
@@ -23,9 +24,20 @@ const paramsReducer = (prevState = defaultState, action: any) => {
         ...prevState,
         journal_id: action.journal_id,
       };
+    case 'ROUTE_USER':
+      return {
+        ...prevState,
+        username: action.username,
+      };
     case 'ROUTE_RESET':
       return {
         ...defaultState,
+      };
+    case 'ROUTE_DETAIL':
+      return {
+        ...prevState,
+        journal_id: action.journal_id,
+        story_id: action.story_id,
       };
     default:
       return prevState;

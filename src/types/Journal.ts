@@ -1,7 +1,10 @@
+import { StoryData } from './Story';
+import { UserData } from './User';
 export interface Comment {
   avatar: string;
   comment: string;
   username: string;
+  commentAt: Date;
 }
 
 export interface Likes {
@@ -19,4 +22,6 @@ export interface JournalData {
   endDate: Date;
   likes: Likes[];
   comments: Comment[];
+  userData?: UserData;
+  stories?: StoryData[];
 }

@@ -5,9 +5,19 @@ import { Octicons } from '@expo/vector-icons';
 import { SCREEN_WIDTH, SCREEN_HEIGHT } from '@src/utils/deviceDimensions';
 import colors from '@src/styles/colors';
 
-const SearchCard = ({ name, imageUrl }: { name?: string; imageUrl?: string }) => {
+const SearchCard = ({
+  name,
+  imageUrl,
+  likes,
+  comment,
+}: {
+  name: string;
+  imageUrl: string;
+  likes: number;
+  comment: number;
+}) => {
   return (
-    <Pressable
+    <View
       style={{
         backgroundColor: 'white',
         shadowColor: 'black',
@@ -34,19 +44,19 @@ const SearchCard = ({ name, imageUrl }: { name?: string; imageUrl?: string }) =>
         />
       </View>
       <View style={{ marginTop: 15, marginBottom: 10 }}>
-        <Text style={{ fontFamily: 'ssprobold', fontSize: 16 }}>asjkjsakldjsakd</Text>
+        <Text style={{ fontFamily: 'ssprobold', fontSize: 16 }}>{name}</Text>
       </View>
       <View style={{ flexDirection: 'row', marginTop: 0 }}>
         <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Octicons name='heart' size={24} color={'#C0C0C0'} />
-          <Text style={{ fontFamily: 'sspro', marginLeft: 5, color: '#C0C0C0' }}>27k</Text>
+          <Text style={{ fontFamily: 'sspro', marginLeft: 5, color: '#C0C0C0' }}>{likes}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
           <Octicons name='comment' size={24} color={'#c0c0c0'} />
-          <Text style={{ fontFamily: 'sspro', marginLeft: 5, color: '#C0C0C0' }}>27k</Text>
+          <Text style={{ fontFamily: 'sspro', marginLeft: 5, color: '#C0C0C0' }}>{comment}</Text>
         </TouchableOpacity>
       </View>
-    </Pressable>
+    </View>
   );
 };
 

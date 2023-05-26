@@ -57,7 +57,7 @@ const Home = () => {
     useCallback(() => {
       getFriendStory();
       getForYouStory();
-    }, [])
+    }, [screen])
   );
   return (
     <View style={{ flex: 1, backgroundColor: colors.white }}>
@@ -121,7 +121,7 @@ const Home = () => {
         </TouchableOpacity>
       </View>
       <View style={{ flex: 1 }} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-        {screen === 'friends' ? <HomeFeeds data={friendStory} /> : null}
+        {screen === 'friends' ? <HomeFeeds data={friendStory} showConnect={false} /> : null}
         {screen === 'foryou' ? <HomeFeeds showConnect={true} data={forYouStory} /> : null}
       </View>
     </View>

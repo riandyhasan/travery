@@ -16,7 +16,8 @@ interface FeedCardProps {
   comments: number;
   isLiked: boolean;
   isShowConnect: boolean;
-  onPressConnect?: (item: any) => void;
+  onPressConnect?: () => void;
+  onPressLike?: () => void;
 }
 
 const FeedsCard = ({
@@ -29,6 +30,8 @@ const FeedsCard = ({
   comments,
   isLiked,
   isShowConnect,
+  onPressLike,
+  onPressConnect,
 }: FeedCardProps) => {
   const [showFullText, setShowFullText] = useState(false);
   const toggleTextDisplay = () => {
@@ -86,7 +89,8 @@ const FeedsCard = ({
         </View>
         {isShowConnect ? (
           <TouchableOpacity
-            style={{ backgroundColor: '#ECECEC', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 10 }}>
+            style={{ backgroundColor: '#ECECEC', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 10 }}
+            onPress={() => onPressConnect && onPressConnect()}>
             <Text style={{ fontFamily: 'ssprosemibold', color: colors.primaryGreen }}>Connect</Text>
           </TouchableOpacity>
         ) : null}
@@ -112,7 +116,9 @@ const FeedsCard = ({
         />
       </View>
       <View style={{ flexDirection: 'row', marginTop: 15 }}>
-        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TouchableOpacity
+          style={{ flexDirection: 'row', alignItems: 'center' }}
+          onPress={() => onPressLike && onPressLike()}>
           <Octicons name={isLiked ? 'heart-fill' : 'heart'} size={24} color={isLiked ? '#E74C3C' : '#C0C0C0'} />
           <Text style={{ fontFamily: 'sspro', marginLeft: 5, color: '#C0C0C0' }}>{likes}</Text>
         </TouchableOpacity>

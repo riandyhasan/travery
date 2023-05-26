@@ -9,6 +9,9 @@ import EditPlan from '@src/screens/Plan/Editor';
 import NewJournal from '@src/screens/Post/Create/Journal';
 import ListJournal from '@src/screens/Post/List/Journal';
 import NewStory from '@src/screens/Post/Create/Story';
+import DetailJournal from '@src/screens/Post/Detail';
+import UserProfile from '@src/screens/OtherProfile';
+import ForgetPassword from '@src/screens/ForgetPassword';
 
 const App = createStackNavigator<Record<string, any>>();
 
@@ -21,6 +24,7 @@ const AppStackNavigator = () => {
       <App.Screen name={'Onboarding'} component={Onboarding} options={{ headerShown: false }} />
       <App.Screen name={'Login'} component={Login} options={{ headerShown: false }} />
       <App.Screen name={'SignUp'} component={SignUp} options={{ headerShown: false }} />
+      <App.Screen name={'ForgetPassword'} component={ForgetPassword} options={{ headerShown: false }} />
 
       {/* Logged Account */}
       <App.Screen name={'Profile'} component={Profile} options={{ headerShown: false }} />
@@ -29,6 +33,8 @@ const AppStackNavigator = () => {
       <App.Screen name={'NewJournal'} component={NewJournal} options={{ headerShown: false }} />
       <App.Screen name={'ListJournal'} component={ListJournal} options={{ headerShown: false }} />
       <App.Screen name={'NewStory'} component={NewStory} options={{ headerShown: false }} />
+      <App.Screen name={'DetailJournal'} component={DetailJournal} options={{ headerShown: false }} />
+      <App.Screen name={'UserProfile'} component={UserProfile} options={{ headerShown: false }} />
     </App.Navigator>
   );
 };

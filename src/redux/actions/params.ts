@@ -13,6 +13,17 @@ export const routeJournal = ({ journal }: { journal?: string | null }) => ({
   journal_id: journal,
 });
 
+export const routeDetail = ({ journal, story }: { journal?: string | null; story?: string | null }) => ({
+  type: 'ROUTE_DETAIL',
+  journal_id: journal,
+  story_id: story,
+});
+
+export const routeUser = ({ user }: { user?: string | null }) => ({
+  type: 'ROUTE_USER',
+  username: user,
+});
+
 export const resetParams = () => ({
   type: 'ROUTE_RESET',
 });

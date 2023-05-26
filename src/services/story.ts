@@ -112,3 +112,31 @@ export const getForYouStories = async (username: string): Promise<StoryData[] | 
 
   return friendStories;
 };
+
+export const getJournalStories = async (journal: string): Promise<StoryData[] | null> => {
+  try {
+    const plansRef = collection(db, 'story');
+    const q = query(plansRef, where('journal', '==', journal));
+    const querySnapshot = await getDocs(q);
+
+    const storys: StoryData[] = [];
+
+    querySnapshot.forEach((storyDoc) => {
+      const storyData = storyDoc.data() as DocumentData;
+      const dayTimestamp = storyData.day;
+      const postedAtTimestamp = storyData.postedAt;
+
+      const day = new Date(dayTimestamp.toMillis());
+      const postedAt = new Date(postedAtTimestamp.toMillis());
+
+      storys.push({ id: storyDoc.id, ...storyData, day, postedAt } as StoryData);
+    });
+
+    storys.sort((a, b) => b.postedAt.getTime() - a.postedAt.getTime());
+
+    return storys;
+  } catch (error) {
+    console.error('Error fetching user plans:', error);
+    return null;
+  }
+};

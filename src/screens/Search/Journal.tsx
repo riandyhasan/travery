@@ -1,20 +1,26 @@
 import React from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet, Pressable } from 'react-native';
 import SearchCard from '@src/components/Cards/Search';
 import { SCREEN_WIDTH } from '@src/utils/deviceDimensions';
-
-const SearchJournal = () => {
-  const data = Array.from({ length: 10 }, (_, idx) => idx); // Generate an array of 10 items
-
-  const renderCard = ({ item }) => (
-    <View style={styles.cardContainer}>
-      <SearchCard />
-    </View>
+import { JournalData } from '@src/types/Journal';
+import { store } from '@src/redux/store';
+import { useNavigation } from '@react-navigation/native';
+import { routeDetail } from '@src/redux/actions/params';
+const SearchJournal = ({ data }: { data: JournalData[] }) => {
+  const navigation = useNavigation();
+  const handleOnPressCard = (item: JournalData) => {
+    store.dispatch(routeDetail({ journal: item.id, story: null }));
+    navigation.navigate('DetailJournal' as never);
+  };
+  const renderCard = ({ item }: { item: JournalData }) => (
+    <Pressable style={styles.cardContainer} key={item.id} onPress={() => handleOnPressCard(item)}>
+      <SearchCard name={item.title} likes={item.likes.length} comment={item.comments.length} imageUrl={item.image} />
+    </Pressable>
   );
 
   return (
     <View style={styles.container}>
-      <FlatList data={data} renderItem={renderCard} keyExtractor={(item) => item.toString()} horizontal />
+      <FlatList data={data} renderItem={renderCard} keyExtractor={(item) => item.id.toString()} horizontal />
     </View>
   );
 };

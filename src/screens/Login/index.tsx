@@ -98,7 +98,7 @@ const Login = () => {
   };
 
   const handleToForgetPassword = () => {
-    navigation.navigate('SignUp' as never);
+    navigation.navigate('ForgetPassword' as never);
   };
 
   const handleToSignUp = () => {

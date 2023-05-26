@@ -8,6 +8,10 @@ import { RootState } from '@src/types/Root';
 import { db } from '@src/utils/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import { Octicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { store } from '@src/redux/store';
+import { routeDetail, routeUser } from '@src/redux/actions/params';
+import { followUser } from '@src/services/user';
 
 const HomeFeeds = ({ data, showConnect = false }: { data: StoryData[]; showConnect?: boolean }) => {
   const user = useSelector((state: RootState) => state.user);
@@ -16,6 +20,9 @@ const HomeFeeds = ({ data, showConnect = false }: { data: StoryData[]; showConne
   const popupAnimation = useRef(new Animated.Value(0)).current;
   const [showAnimation, setShowAnimation] = useState<boolean>(false);
   const [activeID, setActiveID] = useState<string>('');
+  const [pressStartTime, setPressStartTime] = useState(0);
+
+  const navigation = useNavigation();
 
   const checkIfLiked = (item: StoryData) => {
     const likers = item.journalData?.likes;
@@ -28,13 +35,31 @@ const HomeFeeds = ({ data, showConnect = false }: { data: StoryData[]; showConne
     return isLiked;
   };
 
-  const handleLike = async (item: StoryData) => {
+  const handlePressIn = () => {
+    setPressStartTime(new Date().getTime());
+  };
+
+  const handleFollowUser = async (follow: string, followavatar: string) => {
+    await followUser(user.username ?? '', user.avatar ?? '', follow, followavatar);
+  };
+
+  const handleOnPressCard = async (item: StoryData) => {
     setActiveID(item.id);
-    const doubleClickDelay = 300; // Define the delay threshold for a double click
+    const pressEndTime = new Date().getTime();
+    const pressDuration = pressEndTime - pressStartTime;
+    const doubleClickDelay = 3000; // Define the delay threshold for a double click
     const currentTime = new Date().getTime();
     const delta = currentTime - lastPressTime;
 
-    if (delta < doubleClickDelay) {
+    if (pressDuration > 200) {
+      // Perform long press action
+      setLastPressTime(currentTime);
+      store.dispatch(routeDetail({ journal: item?.journalData?.id, story: item.id }));
+      navigation.navigate('DetailJournal' as never);
+      return;
+    }
+
+    if (delta <= doubleClickDelay) {
       if (checkIfLiked(item)) {
         setLastPressTime(0);
         setShowAnimation(true);
@@ -90,19 +115,76 @@ const HomeFeeds = ({ data, showConnect = false }: { data: StoryData[]; showConne
           popupAnimation.setValue(0);
           setShowAnimation(false);
         });
+        setLastPressTime(0);
       }
-
-      setLastPressTime(0);
     } else {
-      // Single click detected, update the last press time
       setLastPressTime(currentTime);
+    }
+  };
+
+  const handleLike = async (item: StoryData) => {
+    setActiveID(item.id);
+    if (checkIfLiked(item)) {
+      setShowAnimation(true);
+      Animated.parallel([
+        Animated.spring(scaleAnimation, {
+          toValue: 1, // Increase the scale to 1
+          useNativeDriver: true, // Enable native driver for better performance
+        }),
+        Animated.timing(popupAnimation, {
+          toValue: 1, // Increase the opacity to 1
+          duration: 500, // Set the duration of the animation
+          easing: Easing.ease, // Set the easing function
+          useNativeDriver: true, // Enable native driver for better performance
+        }),
+      ]).start(() => {
+        // Animation completed, reset the scale and opacity back to 0
+        scaleAnimation.setValue(0);
+        popupAnimation.setValue(0);
+        setShowAnimation(false);
+      });
+      return;
+    }
+
+    // Reset the last press time
+    if (item.journalData && user.username && user.avatar) {
+      const newLikes = item.journalData.likes;
+      const dataLike = {
+        avatar: user.avatar,
+        username: user.username,
+      };
+      newLikes.push(dataLike);
+      const docRef = doc(db, `journal`, item.journalData.id);
+      await updateDoc(docRef, {
+        likes: newLikes,
+      });
+
+      // Start the animations
+      setShowAnimation(true);
+      Animated.parallel([
+        Animated.spring(scaleAnimation, {
+          toValue: 1, // Increase the scale to 1
+          useNativeDriver: true, // Enable native driver for better performance
+        }),
+        Animated.timing(popupAnimation, {
+          toValue: 1, // Increase the opacity to 1
+          duration: 500, // Set the duration of the animation
+          easing: Easing.ease, // Set the easing function
+          useNativeDriver: true, // Enable native driver for better performance
+        }),
+      ]).start(() => {
+        // Animation completed, reset the scale and opacity back to 0
+        scaleAnimation.setValue(0);
+        popupAnimation.setValue(0);
+        setShowAnimation(false);
+      });
     }
   };
 
   const renderCards = () => {
     return data.map((item) => (
       <View style={styles.cardContainer} key={item.id}>
-        <Pressable onPress={() => handleLike(item)}>
+        <Pressable onPressOut={() => handleOnPressCard(item)} onPressIn={handlePressIn}>
           <FeedsCard
             avatar={item.userData?.avatar ?? ''}
             username={item.user}
@@ -113,6 +195,10 @@ const HomeFeeds = ({ data, showConnect = false }: { data: StoryData[]; showConne
             comments={item.journalData?.comments?.length ?? 0}
             isLiked={checkIfLiked(item)}
             isShowConnect={showConnect}
+            onPressLike={() => handleLike(item)}
+            onPressConnect={() =>
+              showConnect && handleFollowUser(item.userData?.username ?? '', item?.userData?.avatar ?? '')
+            }
           />
         </Pressable>
         {showAnimation && activeID == item.id && (
